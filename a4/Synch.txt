@@ -1,0 +1,10 @@
+Our design decision is to create a mutex lock for each resource. This includes:
+- inode table locks for struct ext2_inode such that we only let 1 thread operate on an inode within the inode table at a time
+- group desc lock for struct ext2_group_desc such that we only let the group desc be accessed by 1 thread at time
+- super block lock for struct ext2_super_block such that we only let the super block to be accessed by 1 thread at time
+- block bitmap lock for the block bitmap such that we only let the block bitmap to be accessed by 1 thread at time
+- inode bitmap lock for the inode bitmap such that we only let the inode bitmap to be accessed by 1 thread at time
+
+This strategy is good because it allows us to synchronously share resources and allow for multiple commands to operate concurrently.
+Mutex locks allow us to prevent other threads from accessing shared variables at the same time which could screw up with our individual
+commands.
